@@ -7,6 +7,8 @@ import com.gaoinsh.response.BaseResponse;
 import com.gaoinsh.response.VerifyResponse;
 import com.gaoinsh.util.JwtHelper;
 import org.bouncycastle.util.encoders.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
@@ -19,6 +21,7 @@ import java.util.HashMap;
  */
 @RestController
 public class UserController {
+    protected static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @RequestMapping(value = "/login/{userName}", method = RequestMethod.GET)
     @ResponseBody
@@ -27,7 +30,7 @@ public class UserController {
         BaseResponse resp = new BaseResponse();
         resp.setResult(1);
         HashMap<String, String> claims = new HashMap<>();
-        System.out.println("userName" + userName);
+        logger.info("userName" + userName);
         claims.put("userName", userName);
         String token = null;
         try {
@@ -49,15 +52,15 @@ public class UserController {
             jwt = JwtHelper.verify(req.getToken());
             String header = new String(Base64.decode(jwt.getHeader()));
             resp.setHeader(header);
-            System.out.println("header-> " + header);
+            logger.info("header-> " + header);
             String payload = new String(Base64.decode(jwt.getPayload()));
             resp.setPayLoad(payload);
-            System.out.println("payload-> " + payload);
-            System.out.println("signature-> " + jwt.getSignature());
+            logger.info("payload-> " + payload);
+            logger.info("signature-> " + jwt.getSignature());
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (TokenExpiredException e) {
-            System.out.println("token超时");
+            logger.info("token超时");
         }
         resp.setResult(jwt == null ? 1 : 0);
         resp.setToken(req.getToken());
