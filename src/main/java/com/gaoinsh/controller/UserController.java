@@ -5,10 +5,13 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.gaoinsh.request.VerifyRequest;
 import com.gaoinsh.response.BaseResponse;
 import com.gaoinsh.response.VerifyResponse;
+import com.gaoinsh.service.UserService;
 import com.gaoinsh.util.JwtHelper;
 import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
@@ -19,9 +22,12 @@ import java.util.HashMap;
  * @author xiang.gao
  * @version $Id: UserController.java, v 0.1 2018-05-31 15:13 xiang.gao Exp $$
  */
-@RestController
+@Controller
 public class UserController {
     protected static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "/login/{userName}", method = RequestMethod.GET)
     @ResponseBody
@@ -30,7 +36,7 @@ public class UserController {
         BaseResponse resp = new BaseResponse();
         resp.setResult(1);
         HashMap<String, String> claims = new HashMap<>();
-        logger.info("userName" + userName);
+        userService.findByName(userName);
         claims.put("userName", userName);
         String token = null;
         try {
@@ -62,7 +68,7 @@ public class UserController {
         } catch (TokenExpiredException e) {
             logger.info("token超时");
         }
-        resp.setResult(jwt == null ? 1 : 0);
+        resp.setResult(jwt == null ? 0 : 1);
         resp.setToken(req.getToken());
 
         return resp;
