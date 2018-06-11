@@ -24,7 +24,8 @@ public class InitializationTest {
                 public void run() {
                     try {
                         cdl.await();
-                        InitializationThread.refreshNew();
+                        InitializationThread.refresh();
+                        System.out.println(Thread.currentThread().getName() + " 已经获取到了结果: " + InitializationThread.getVal());
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
