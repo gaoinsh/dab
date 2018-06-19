@@ -20,9 +20,9 @@ public class InitializationThread {
 
     private static ReentrantLock mainLock = new ReentrantLock();
 
-    private static ReentrantLock awaitLock = new ReentrantLock();
+    private static ReentrantLock waitLock = new ReentrantLock();
 
-    private static Condition waitCondition = awaitLock.newCondition();
+    private static Condition waitCondition = waitLock.newCondition();
 
     private static volatile String val = "1";
 
@@ -73,7 +73,7 @@ public class InitializationThread {
 
     private static void waitWorkingResult() {
         if (mainLock.isLocked()) {
-            awaitLock.lock();
+            waitLock.lock();
             try {
                 /*
                  *  workThread在unlock,signal之后,有可能仍有线程尝试在此处阻塞,等待workThread唤醒，这部分线程会无法被唤醒。
@@ -86,19 +86,19 @@ public class InitializationThread {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                awaitLock.unlock();
+                waitLock.unlock();
             }
         }
     }
 
     private static void sinalAllWaitingThread() {
-        awaitLock.lock();
+        waitLock.lock();
         try {
             waitCondition.signalAll();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            awaitLock.unlock();
+            waitLock.unlock();
         }
     }
 
