@@ -7,3 +7,4 @@ target
 .settings/
 .mvn
 .gitattributes
+src/test/java/ymmTest/
