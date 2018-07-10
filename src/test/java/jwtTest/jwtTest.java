@@ -1,7 +1,4 @@
-/**
- * ymm56.com Inc.
- * Copyright (c) 2013-2018 All Rights Reserved.
- */
+
 package jwtTest;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
